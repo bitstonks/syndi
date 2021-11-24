@@ -1,9 +1,8 @@
-module syndi
+module github.com/bitstonks/syndi
 
 go 1.17
 
 require (
-	bitbts.bitstamp.net/bint/go-kit v0.32.0
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/uuid v1.3.0
 )

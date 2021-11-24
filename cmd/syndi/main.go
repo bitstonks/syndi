@@ -8,8 +8,8 @@ import (
 	"sort"
 	"strings"
 
-	"bitbts.bitstamp.net/bint/go-kit/config"
-	"bitbts.bitstamp.net/bint/go-kit/version"
+	"github.com/bitstonks/syndi/internal/config"
+	"github.com/bitstonks/syndi/internal/generators"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -28,17 +28,10 @@ type Config struct {
 func main() {
 	// parse flags
 	configFile := flag.String("c", "config.yaml", "configuration file to use")
-	showVersion := flag.Bool("version", false, "show application version and exit immediately")
 	flag.Parse()
 
-	if *showVersion {
-		fmt.Println(version.GetVersion())
-		return
-	}
-
 	// load configuration
-	var cfg Config
-	err := config.LoadAndValidateConfiguration([]string{*configFile}, &cfg)
+	cfg, err := config.LoadConfig(configFile)
 	if err != nil {
 		log.Panicf("error loading config file (%s): %#v:", *configFile, err)
 	}
@@ -105,14 +98,14 @@ func main() {
 	}
 }
 
-func prepareColumnGenerators(columnsConfig map[string]string) ([]string, []Generator) {
+func prepareColumnGenerators(columnsConfig map[string]string) ([]string, []generators.Generator) {
 	sortedColumns := make([]string, 0, len(columnsConfig))
 	for col := range columnsConfig {
 		sortedColumns = append(sortedColumns, col)
 	}
 	sort.Strings(sortedColumns)
 
-	generators := make([]Generator, 0, len(columnsConfig))
+	gens := make([]generators.Generator, 0, len(columnsConfig))
 	for _, col := range sortedColumns {
 		genType, genArgs := parseAndValidateDataDefinition(columnsConfig[col])
 		if genType == "" {
@@ -120,25 +113,25 @@ func prepareColumnGenerators(columnsConfig map[string]string) ([]string, []Gener
 		}
 		switch genType {
 		case "bool":
-			generators = append(generators, NewBoolGenerator(col, genArgs))
+			gens = append(gens, generators.NewBoolGenerator(col, genArgs))
 		case "datetime":
-			generators = append(generators, NewDatetimeGenerator(col, genArgs))
+			gens = append(gens, generators.NewDatetimeGenerator(col, genArgs))
 		case "float":
-			generators = append(generators, NewFloatGenerator(col, genArgs))
+			gens = append(gens, generators.NewFloatGenerator(col, genArgs))
 		case "int":
-			generators = append(generators, NewIntGenerator(col, genArgs))
+			gens = append(gens, generators.NewIntGenerator(col, genArgs))
 		case "string":
-			generators = append(generators, NewStringGenerator(col, genArgs))
+			gens = append(gens, generators.NewStringGenerator(col, genArgs))
 		case "text":
-			generators = append(generators, NewTextGenerator(col, genArgs))
+			gens = append(gens, generators.NewTextGenerator(col, genArgs))
 		case "uuid":
-			generators = append(generators, NewUuidGenerator(col, genArgs))
+			gens = append(gens, generators.NewUuidGenerator(col, genArgs))
 		default:
 			log.Panicf("unknown type `%s` in column `%s` (%s)", genType, col, columnsConfig[col])
 		}
 	}
 
-	return sortedColumns, generators
+	return sortedColumns, gens
 }
 
 func parseAndValidateDataDefinition(columnDef string) (string, map[string]string) {
@@ -166,14 +159,14 @@ func parseAndValidateDataDefinition(columnDef string) (string, map[string]string
 	return genType, args
 }
 
-func generateBatch(size int, generators *[]Generator) []string {
+func generateBatch(size int, gens *[]generators.Generator) []string {
 	res := make([]string, 0, size)
-	genSize := len(*generators)
+	genSize := len(*gens)
 
 	for i := 0; i < size; i++ {
 		single := make([]string, 0, genSize)
 		for j := 0; j < genSize; j++ {
-			single = append(single, (*generators)[j].Next())
+			single = append(single, (*gens)[j].Next())
 		}
 		res = append(res, "("+strings.Join(single, ",")+")")
 	}

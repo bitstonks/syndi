@@ -1,4 +1,4 @@
-package main
+package generators
 
 import (
 	"fmt"
@@ -543,7 +543,7 @@ func NewTextGenerator(colName string, args map[string]string) *TextGenerator {
 
 func (g *TextGenerator) Next() string {
 	if g.Nullable > 0 && g.rng.Float64() < g.Nullable {
-			return "NULL"
+		return "NULL"
 	}
 	i := g.rng.Int63n(lipsumLen - g.Len)
 	return "'" + lipsum[i:i+g.Len] + "'"
