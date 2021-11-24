@@ -31,7 +31,7 @@ func main() {
 	flag.Parse()
 
 	// load configuration
-	cfg, err := config.LoadConfig(configFile)
+	cfg, err := config.LoadConfig(*configFile)
 	if err != nil {
 		log.Panicf("error loading config file (%s): %#v:", *configFile, err)
 	}

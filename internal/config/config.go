@@ -16,8 +16,8 @@ type Config struct {
 	Columns      map[string]string `yaml:"Columns" validate:"required,dive,keys,required,endkeys"`
 }
 
-func LoadConfig(filename *string) (*Config, error) {
-	yamlFile, err := ioutil.ReadFile(*filename)
+func LoadConfig(filename string) (*Config, error) {
+	yamlFile, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
