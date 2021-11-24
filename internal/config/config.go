@@ -1,9 +1,11 @@
 package config
 
 import (
+	"io/ioutil"
+	"log"
+
 	"github.com/go-playground/validator/v10"
 	"gopkg.in/yaml.v2"
-	"io/ioutil"
 )
 
 type Config struct {
@@ -24,6 +26,10 @@ func LoadConfig(filename string) (*Config, error) {
 	err = yaml.Unmarshal(yamlFile, &c)
 	if err != nil {
 		return nil, err
+	}
+	if c.BatchSize > c.TotalRecords {
+		log.Println("Setting BatchSize to equal TotalRecords.")
+		c.BatchSize = c.TotalRecords
 	}
 	validate := validator.New()
 	err = validate.Struct(c)
