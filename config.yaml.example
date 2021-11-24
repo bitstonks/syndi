@@ -1,0 +1,18 @@
+DbDSN: <user>:<password>@tcp(localhost:28000)/bitstamp_dev?parseTime=true&interpolateParams=true
+DbTable: account_walletdeposit
+TotalRecords: 5031
+BatchSize: 700
+SafeImport: no
+Columns:
+  user_id: 'type=int;vals=1,2000;dist=uniform'
+  txid: 'type=uuid'
+  btc: 'type=float;vals=0.0,123.4'
+  datetime: 'type=datetime;dist=rand;vals=2012-01-01 00:00:00'
+  source_addresses: 'type=text;length=250'
+  instant: 'type=bool'
+  instant_id: 'type=text;len=100'
+  json_blob: 'type=text;len=100'
+  confirmed_datetime: 'type=datetime;null=0.1'
+  amount: 'type=float;dist=normal'
+  currency: 'type=string;length=120;null=0.1'
+  currency_enum: 'type=int'
