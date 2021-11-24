@@ -1,7 +1,9 @@
 package config
 
-import "io/ioutil"
-import "gopkg.in/yaml.v2"
+import (
+	"io/ioutil"
+	"gopkg.in/yaml.v2"
+)
 
 // TODO(mkolman): Validate using github.com/go-playground/validator/v10
 
