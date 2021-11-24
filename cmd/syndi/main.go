@@ -14,20 +14,11 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type Config struct {
-	DbDSN        string            `yaml:"DbDSN" validate:"required"`
-	DbTable      string            `yaml:"DbTable" validate:"required"`
-	TotalRecords int               `yaml:"TotalRecords" validate:"required,gt=0"`
-	BatchSize    int               `yaml:"BatchSize" validate:"required,gt=0"`
-	SafeImport   bool              `yaml:"SafeImport"`
-	Columns      map[string]string `yaml:"Columns" validate:"required,dive,keys,required,endkeys"`
-}
+var configFile = flag.String("c", "config.yaml", "configuration file to use")
 
 // TODO 1: generate in one goroutine and import in another...
 // TODO 2: have concurrent clients for faster import...
 func main() {
-	// parse flags
-	configFile := flag.String("c", "config.yaml", "configuration file to use")
 	flag.Parse()
 
 	// load configuration
@@ -111,24 +102,12 @@ func prepareColumnGenerators(columnsConfig map[string]string) ([]string, []gener
 		if genType == "" {
 			log.Panicf("no data type defined for column `%s` (%s)", col, columnsConfig[col])
 		}
-		switch genType {
-		case "bool":
-			gens = append(gens, generators.NewBoolGenerator(col, genArgs))
-		case "datetime":
-			gens = append(gens, generators.NewDatetimeGenerator(col, genArgs))
-		case "float":
-			gens = append(gens, generators.NewFloatGenerator(col, genArgs))
-		case "int":
-			gens = append(gens, generators.NewIntGenerator(col, genArgs))
-		case "string":
-			gens = append(gens, generators.NewStringGenerator(col, genArgs))
-		case "text":
-			gens = append(gens, generators.NewTextGenerator(col, genArgs))
-		case "uuid":
-			gens = append(gens, generators.NewUuidGenerator(col, genArgs))
-		default:
-			log.Panicf("unknown type `%s` in column `%s` (%s)", genType, col, columnsConfig[col])
+		genArgs["name"] = col
+		g, err := generators.GetGenerator(genType, genArgs)
+		if err != nil {
+			log.Panic(err)
 		}
+		gens = append(gens, g)
 	}
 
 	return sortedColumns, gens
