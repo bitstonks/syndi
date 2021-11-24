@@ -1,11 +1,10 @@
 package config
 
 import (
+	"github.com/go-playground/validator/v10"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 )
-
-// TODO(mkolman): Validate using github.com/go-playground/validator/v10
 
 type Config struct {
 	DbDSN        string            `yaml:"DbDSN" validate:"required"`
@@ -26,5 +25,7 @@ func LoadConfig(filename string) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	return c, nil
+	validate := validator.New()
+	err = validate.Struct(c)
+	return c, err
 }
