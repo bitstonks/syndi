@@ -1,9 +1,9 @@
 package generators
 
 import (
-	"log"
+	"fmt"
+	"github.com/bitstonks/syndi/internal/config"
 	"math/rand"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -31,44 +31,27 @@ Donec vitae fermentum metus. Sed dictum leo vel ipsum viverra consectetur. In ha
 Mauris pellentesque pulvinar pellentesque. Aenean nec tortor et mauris hendrerit iaculis ac at dolor. Integer varius rhoncus semper. Aliquam erat volutpat. Aenean varius arcu eu sem pharetra, ut vulputate neque fringilla. Vivamus a convallis est. Donec molestie ut nisi vitae iaculis. Ut sagittis leo sit amet purus sagittis cursus. Sed porta erat lorem, sed ullamcorper ex lobortis vel. Pellentesque cursus pellentesque lorem, sit amet malesuada quam consequat quis. Sed tristique tristique leo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean urna quam, porta sit amet auctor pharetra, accumsan eu ex. Fusce aliquam accumsan justo, a suscipit lacus scelerisque non. Aliquam erat volutpat.
 Suspendisse ac dui lacus. Integer lectus nisi, congue ac mi quis, porta lobortis arcu. Donec aliquam velit luctus sagittis blandit. Donec commodo nisi vel aliquet placerat. Nulla facilisis tellus vitae nulla viverra cursus. Donec condimentum commodo dolor, vel dictum lacus viverra quis. Nam non lorem sed quam ultrices egestas ultrices sed ipsum. Suspendisse potenti.
 `, "\r\n", " ", -1)
-var lipsumLen = int64(len(lipsum))
+var lipsumLen = len(lipsum)
 
 // TODO: what if Len is actually greater than lipsumLen?
 type TextGenerator struct {
 	rng      *rand.Rand
-	Column   string
-	Len      int64
-	Nullable float64
+	len      int
+	nullable float64
 }
 
-func NewTextGenerator(args map[string]string) Generator {
-	colName := args["name"]
-	g := TextGenerator{
-		rng:    rand.New(rand.NewSource(time.Now().UnixNano())),
-		Column: colName,
+func NewTextGenerator(args config.Args) Generator {
+	return &TextGenerator{
+		rng:      rand.New(rand.NewSource(time.Now().UnixNano())),
+		len:      args.Length,
+		nullable: args.Nullable,
 	}
-	if v, exists := args["null"]; exists {
-		if nullable, err := strconv.ParseFloat(v, 64); err == nil {
-			g.Nullable = nullable
-		}
-	}
-	if val, exists := args["len"]; exists {
-		l, err := strconv.ParseInt(val, 10, 64)
-		if err != nil {
-			log.Panicf("error parsing `len` for column %s", colName)
-		}
-		g.Len = l
-	} else {
-		log.Printf("absent `len` argument for column %s, defaulting to 100", colName)
-		g.Len = 100
-	}
-	return &g
 }
 
 func (g *TextGenerator) Next() string {
-	if g.Nullable > 0 && g.rng.Float64() < g.Nullable {
+	if g.nullable > 0 && g.rng.Float64() < g.nullable {
 		return "NULL"
 	}
-	i := g.rng.Int63n(lipsumLen - g.Len)
-	return "'" + lipsum[i:i+g.Len] + "'"
+	i := g.rng.Intn(lipsumLen - g.len)
+	return fmt.Sprintf("%q", lipsum[i:i+g.len])
 }

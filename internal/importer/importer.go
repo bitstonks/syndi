@@ -62,7 +62,7 @@ func min(a, b int) int {
 	return b
 }
 
-func prepareColumnGenerators(columnsConfig map[string]string) ([]string, []generators.Generator) {
+func prepareColumnGenerators(columnsConfig map[string]config.Args) ([]string, []generators.Generator) {
 	sortedColumns := make([]string, 0, len(columnsConfig))
 	for col := range columnsConfig {
 		sortedColumns = append(sortedColumns, col)
@@ -71,12 +71,11 @@ func prepareColumnGenerators(columnsConfig map[string]string) ([]string, []gener
 
 	gens := make([]generators.Generator, 0, len(columnsConfig))
 	for _, col := range sortedColumns {
-		genType, genArgs := parseAndValidateDataDefinition(columnsConfig[col])
-		if genType == "" {
-			log.Panicf("no data type defined for column `%s` (%s)", col, columnsConfig[col])
+		genArgs := columnsConfig[col]
+		if genArgs.Type == "" {
+			log.Panicf("no data type defined for column `%s`", col)
 		}
-		genArgs["name"] = col
-		g, err := generators.GetGenerator(genType, genArgs)
+		g, err := generators.GetGenerator(genArgs)
 		if err != nil {
 			log.Panic(err)
 		}
@@ -84,31 +83,6 @@ func prepareColumnGenerators(columnsConfig map[string]string) ([]string, []gener
 	}
 
 	return sortedColumns, gens
-}
-
-func parseAndValidateDataDefinition(columnDef string) (string, map[string]string) {
-	rawDefs := strings.Split(columnDef, ";")
-
-	var genType string
-	args := make(map[string]string)
-
-	for _, def := range rawDefs {
-		tmp := strings.Split(def, "=")
-		if len(tmp) > 2 {
-			log.Panicf("invalid column definition: `%s`", def)
-		}
-		if tmp[0] == "type" {
-			genType = tmp[1]
-		} else {
-			if _, exists := args[tmp[0]]; exists {
-				// TODO: consider having the column name here as well
-				log.Panicf("multiple definitions for key `%s` in `%s`", tmp[0], def)
-			}
-			args[tmp[0]] = tmp[1]
-		}
-	}
-
-	return genType, args
 }
 
 func generateBatch(size int, gens *[]generators.Generator) []string {

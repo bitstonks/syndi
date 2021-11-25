@@ -1,84 +1,62 @@
 package generators
 
 import (
+	"fmt"
+	"github.com/bitstonks/syndi/internal/config"
 	"log"
 	"math/rand"
-	"strconv"
-	"strings"
 	"time"
 )
 
-type DatetimeGenerator struct {
-	rng      *rand.Rand
-	Column   string
-	DttmFmt  string
-	Mode     int
-	Nullable float64
-	Values   []int64
+func NewDatetimeNowGenerator(args config.Args) Generator {
+	args.OneOf = "NOW()"
+	return NewOneOfGenerator(args)
 }
 
-func NewDatetimeGenerator(args map[string]string) Generator {
-	colName := args["name"]
-	g := DatetimeGenerator{
-		rng:     rand.New(rand.NewSource(time.Now().UnixNano())),
-		Column:  colName,
-		DttmFmt: "2006-01-02 15:04:05",
+type DatetimeUniformGenerator struct {
+	rng      *rand.Rand
+	dtFmt    string
+	nullable float64
+	minVal   int64
+	maxVal   int64
+}
+
+func NewDatetimeUniformGenerator(args config.Args) Generator {
+	g := DatetimeUniformGenerator{
+		rng:      rand.New(rand.NewSource(time.Now().UnixNano())),
+		dtFmt:    "2006-01-02 15:04:05",
+		nullable: args.Nullable,
 	}
-	if v, exists := args["null"]; exists {
-		if nullable, err := strconv.ParseFloat(v, 64); err == nil {
-			g.Nullable = nullable
-		}
-	}
-
-	switch args["dist"] {
-	case "now", "":
-		if args["dist"] == "" {
-			log.Printf("missing `dist` for column %s, defaulting to `now`", colName)
-		}
-		g.Mode = 1
-
-	case "rand":
-		g.Mode = 2
-		if strBounds, exists := args["vals"]; exists {
-			bounds := strings.Split(strBounds, ",")
-			t, err := time.Parse(g.DttmFmt, bounds[0])
-			if err != nil {
-				log.Panicf("error parsing datetime bound `%s` for column %s", bounds[0], colName)
-			}
-			g.Values = append(g.Values, t.Unix())
-
-			// TODO: mulitple values?!
-			if len(bounds) == 2 {
-				t, err = time.Parse(g.DttmFmt, bounds[1])
-				if err != nil {
-					log.Panicf("error parsing datetime bound `%s` for column %s", bounds[1], colName)
-				}
-				g.Values = append(g.Values, t.Unix())
-			} else {
-				g.Values = append(g.Values, time.Now().UTC().Unix())
-			}
-		} else {
-			g.Values = []int64{time.Date(1970, 1, 0, 0, 0, 0, 0, time.UTC).Unix(), time.Now().UTC().Unix()}
-		}
-
-	default:
-		log.Panicf("unknown `dist` %s for column %s", args["dist"], colName)
+	minVal := time.Date(1970, 1, 0, 0, 0, 0, 0, time.UTC)
+	maxVal := time.Now().UTC()
+	g.minVal = parseDT(g.dtFmt, args.MinVal, minVal).Unix()
+	g.maxVal = parseDT(g.dtFmt, args.MaxVal, maxVal).Unix()
+	if g.minVal >= g.maxVal {
+		log.Panicf(
+			"minVal not smaller than maxVal: %s < %s",
+			time.Unix(g.minVal, 0).Format(g.dtFmt),
+			time.Unix(g.maxVal, 0).Format(g.dtFmt),
+		)
 	}
 	return &g
 }
 
-func (g *DatetimeGenerator) Next() string {
-	if g.Nullable > 0 && g.rng.Float64() < g.Nullable {
+func (g *DatetimeUniformGenerator) Next() string {
+	if g.nullable > 0 && g.rng.Float64() < g.nullable {
 		return "NULL"
 	}
 
-	var res string
-	switch g.Mode {
-	case 1:
-		res = "NOW()"
-	case 2:
-		secs := g.rng.Int63n(g.Values[1]-g.Values[0]) + g.Values[0]
-		res = "'" + time.Unix(secs, 0).Format(g.DttmFmt) + "'"
+	secs := g.rng.Int63n(g.maxVal-g.minVal) + g.minVal
+	return fmt.Sprintf("%q", time.Unix(secs, 0).Format(g.dtFmt))
+}
+
+func parseDT(dtFmt, dt string, fallback time.Time) time.Time {
+	if len(dt) == 0 {
+		return fallback
 	}
-	return res
+	v, err := time.Parse(dtFmt, dt)
+	if err != nil {
+		log.Panicf("error parsing datetime %q: %s", dt, err)
+	}
+	return v
 }
