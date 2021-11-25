@@ -12,12 +12,16 @@ import (
 )
 
 type Importer struct {
-	db  *sql.DB
-	cfg *config.Config
+	db   *sql.DB
+	cfg  *config.Config
+	cols []string
+	gens []generators.Generator
 }
 
 func NewImporter(db *sql.DB, cfg *config.Config) *Importer {
-	return &Importer{db: db, cfg: cfg}
+	im := Importer{db: db, cfg: cfg}
+	im.cols, im.gens = prepareColumnGenerators(cfg.Columns)
+	return &im
 }
 
 func (im *Importer) DisableFK() error {
@@ -40,14 +44,13 @@ func (im *Importer) EnableFK() error {
 }
 
 func (im *Importer) Import() error {
-	cols, gens := prepareColumnGenerators(im.cfg.Columns)
-	sqlPrefix := fmt.Sprintf("INSERT INTO %s (%s) VALUES ", im.cfg.DbTable, strings.Join(cols, ","))
+	sqlPrefix := fmt.Sprintf("INSERT INTO %s (%s) VALUES ", im.cfg.DbTable, strings.Join(im.cols, ","))
 
 	for rem := im.cfg.TotalRecords; rem > 0; rem -= im.cfg.BatchSize {
 		log.Printf("loading a batch of max %d out of remaining %d records", im.cfg.BatchSize, rem)
-		batch := generateBatch(min(rem, im.cfg.BatchSize), &gens)
-		sql := sqlPrefix + strings.Join(batch, ",")
-		_, err := im.db.Exec(sql)
+		batch := generateBatch(min(rem, im.cfg.BatchSize), &im.gens)
+		query := sqlPrefix + strings.Join(batch, ",")
+		_, err := im.db.Exec(query)
 		if err != nil {
 			return err
 		}
@@ -62,15 +65,13 @@ func min(a, b int) int {
 	return b
 }
 
-func prepareColumnGenerators(columnsConfig map[string]config.Args) ([]string, []generators.Generator) {
-	sortedColumns := make([]string, 0, len(columnsConfig))
+func prepareColumnGenerators(columnsConfig map[string]config.Args) (cols []string, gens []generators.Generator) {
 	for col := range columnsConfig {
-		sortedColumns = append(sortedColumns, col)
+		cols = append(cols, col)
 	}
-	sort.Strings(sortedColumns)
+	sort.Strings(cols)
 
-	gens := make([]generators.Generator, 0, len(columnsConfig))
-	for _, col := range sortedColumns {
+	for _, col := range cols {
 		genArgs := columnsConfig[col]
 		if genArgs.Type == "" {
 			log.Panicf("no data type defined for column `%s`", col)
@@ -81,8 +82,7 @@ func prepareColumnGenerators(columnsConfig map[string]config.Args) ([]string, []
 		}
 		gens = append(gens, g)
 	}
-
-	return sortedColumns, gens
+	return
 }
 
 func generateBatch(size int, gens *[]generators.Generator) []string {
@@ -96,6 +96,5 @@ func generateBatch(size int, gens *[]generators.Generator) []string {
 		}
 		res = append(res, "("+strings.Join(single, ",")+")")
 	}
-
 	return res
 }
