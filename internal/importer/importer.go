@@ -74,7 +74,7 @@ func prepareColumnGenerators(columnsConfig map[string]config.Args) (cols []strin
 	for _, col := range cols {
 		genArgs := columnsConfig[col]
 		if genArgs.Type == "" {
-			log.Panicf("no data type defined for column `%s`", col)
+			log.Panicf("no data type defined for column %q", col)
 		}
 		g, err := generators.GetGenerator(genArgs)
 		if err != nil {

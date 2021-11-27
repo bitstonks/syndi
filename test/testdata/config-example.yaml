@@ -33,6 +33,8 @@ Columns:
     nullable: 0.1
   amount:
     type: float/normal
+    minVal: -1
+    maxVal: 1
   currency:
     type: string/rand
     length: 120
