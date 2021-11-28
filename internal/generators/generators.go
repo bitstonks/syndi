@@ -2,6 +2,9 @@ package generators
 
 import (
 	"fmt"
+	"math/rand"
+	"time"
+
 	"github.com/bitstonks/syndi/internal/config"
 )
 
@@ -20,7 +23,7 @@ func GetGenerator(args config.Args) (Generator, error) {
 	if !ok {
 		return nil, fmt.Errorf("generator of type %s doesn't exist", args.Type)
 	}
-	return builder(args), nil
+	return MakeNullable(builder(args), args.Nullable), nil
 }
 
 func init() {
@@ -47,4 +50,8 @@ func init() {
 	RegisterGenerator("string/rand", NewStringGenerator)
 	RegisterGenerator("string/text", NewTextGenerator)
 	RegisterGenerator("string/uuid", NewUuidGenerator)
+}
+
+func NewRng() *rand.Rand {
+	return rand.New(rand.NewSource(time.Now().UnixNano()))
 }

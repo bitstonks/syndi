@@ -1,19 +1,18 @@
 package generators
 
 import (
-	"github.com/bitstonks/syndi/internal/config"
 	"log"
 	"math/rand"
 	"strconv"
 	"strings"
-	"time"
+
+	"github.com/bitstonks/syndi/internal/config"
 )
 
 type OneOfGenerator struct {
-	rng      *rand.Rand
-	nullable float64
-	weights  map[string]int
-	total    int
+	rng     *rand.Rand
+	weights map[string]int
+	total   int
 }
 
 func NewOneOfGenerator(args config.Args) Generator {
@@ -23,17 +22,13 @@ func NewOneOfGenerator(args config.Args) Generator {
 		total += w
 	}
 	return &OneOfGenerator{
-		nullable: args.Nullable,
-		weights:  weights,
-		total:    total,
-		rng:      rand.New(rand.NewSource(time.Now().UnixNano())),
+		rng:     NewRng(),
+		weights: weights,
+		total:   total,
 	}
 }
 
 func (g *OneOfGenerator) Next() string {
-	if g.nullable > 0 && g.rng.Float64() < g.nullable {
-		return "NULL"
-	}
 	n := g.rng.Intn(g.total)
 	for v, w := range g.weights {
 		n -= w
