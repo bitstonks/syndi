@@ -2,18 +2,17 @@ package generators
 
 import (
 	"fmt"
-	"github.com/bitstonks/syndi/internal/config"
 	"log"
 	"math/rand"
 	"strconv"
-	"time"
+
+	"github.com/bitstonks/syndi/internal/config"
 )
 
 type IntUniformGenerator struct {
-	rng      *rand.Rand
-	nullable float64
-	minVal   int // Inclusive
-	maxVal   int // Non-inclusive
+	rng    *rand.Rand
+	minVal int // Inclusive
+	spread int // minVal + spread non-inclusive
 }
 
 func NewIntUniformGenerator(args config.Args) Generator {
@@ -29,16 +28,12 @@ func NewIntUniformGenerator(args config.Args) Generator {
 		log.Panicf("minVal not smaller than maxVal: %d < %d", minVal, maxVal)
 	}
 	return &IntUniformGenerator{
-		rng:      rand.New(rand.NewSource(time.Now().UnixNano())),
-		nullable: args.Nullable,
-		minVal:   int(minVal),
-		maxVal:   int(maxVal),
+		rng:    NewRng(),
+		minVal: int(minVal),
+		spread: int(maxVal - minVal),
 	}
 }
 
 func (g *IntUniformGenerator) Next() string {
-	if g.nullable > 0 && g.rng.Float64() < g.nullable {
-		return "NULL"
-	}
-	return fmt.Sprintf("%d", g.rng.Intn(g.maxVal-g.minVal)+g.minVal)
+	return fmt.Sprintf("%d", g.rng.Intn(g.spread)+g.minVal)
 }

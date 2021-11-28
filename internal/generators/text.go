@@ -2,10 +2,10 @@ package generators
 
 import (
 	"fmt"
-	"github.com/bitstonks/syndi/internal/config"
 	"math/rand"
 	"strings"
-	"time"
+
+	"github.com/bitstonks/syndi/internal/config"
 )
 
 // yaay, globals!
@@ -35,23 +35,18 @@ var lipsumLen = len(lipsum)
 
 // TODO: what if Len is actually greater than lipsumLen?
 type TextGenerator struct {
-	rng      *rand.Rand
-	len      int
-	nullable float64
+	rng *rand.Rand
+	len int
 }
 
 func NewTextGenerator(args config.Args) Generator {
 	return &TextGenerator{
-		rng:      rand.New(rand.NewSource(time.Now().UnixNano())),
-		len:      args.Length,
-		nullable: args.Nullable,
+		rng: NewRng(),
+		len: args.Length,
 	}
 }
 
 func (g *TextGenerator) Next() string {
-	if g.nullable > 0 && g.rng.Float64() < g.nullable {
-		return "NULL"
-	}
 	i := g.rng.Intn(lipsumLen - g.len)
 	return fmt.Sprintf("%q", lipsum[i:i+g.len])
 }
