@@ -32,10 +32,10 @@ func init() {
 	// TODO: have specialized constructors that validate the data but still use OneOfGenerator behind the scenes
 	RegisterGenerator("oneof", NewOneOfGenerator)
 	RegisterGenerator("bool/oneof", NewOneOfGenerator)
-	RegisterGenerator("datetime/oneof", NewOneOfGenerator)
+	RegisterGenerator("datetime/oneof", NewQuotedOneOfGenerator)
 	RegisterGenerator("float/oneof", NewOneOfGenerator)
 	RegisterGenerator("int/oneof", NewOneOfGenerator)
-	RegisterGenerator("string/oneof", NewOneOfGenerator)
+	RegisterGenerator("string/oneof", NewQuotedOneOfGenerator)
 
 	RegisterGenerator("bool", NewBoolGenerator)
 	RegisterGenerator("datetime", NewDatetimeNowGenerator)

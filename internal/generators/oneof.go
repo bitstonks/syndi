@@ -1,6 +1,7 @@
 package generators
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
 	"strconv"
@@ -37,6 +38,20 @@ func (g *OneOfGenerator) Next() string {
 		}
 	}
 	return ""
+}
+
+type QuotedOneOfGenerator struct {
+	gen Generator
+}
+
+func NewQuotedOneOfGenerator(args config.Args) Generator {
+	return &QuotedOneOfGenerator{
+		gen: NewOneOfGenerator(args),
+	}
+}
+
+func (g *QuotedOneOfGenerator) Next() string {
+	return fmt.Sprintf("%q", g.gen.Next())
 }
 
 func getMultipleChoice(opts string) (weights map[string]int) {
