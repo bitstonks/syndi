@@ -10,25 +10,25 @@ import (
 	"github.com/bitstonks/syndi/internal/config"
 )
 
-// OneOfGenerator generates values from a finite pool of predefined choices.
+// oneOfGenerator generates values from a finite pool of predefined choices.
 // Choices can be selected uniformly or weighted to select some more often than others.
-type OneOfGenerator struct {
+type oneOfGenerator struct {
 	rng     *rand.Rand
 	weights []weighted
 	total   int
 }
 
-// NewOneOfGenerator constructs a OneOfGenerator
+// NewOneOfGenerator constructs a oneOfGenerator
 func NewOneOfGenerator(args config.Args) Generator {
 	weights, total := getMultipleChoice(args.OneOf)
-	return &OneOfGenerator{
-		rng:     NewRng(),
+	return &oneOfGenerator{
+		rng:     newRng(),
 		weights: weights,
 		total:   total,
 	}
 }
 
-func (g *OneOfGenerator) Next() string {
+func (g *oneOfGenerator) Next() string {
 	n := g.rng.Intn(g.total)
 	for _, w := range g.weights {
 		n -= w.weight
@@ -39,18 +39,18 @@ func (g *OneOfGenerator) Next() string {
 	return ""
 }
 
-// QuotedOneOfGenerator is a light wrapper for OneOfGenerator that wraps the generated strings in single quotes.
-type QuotedOneOfGenerator struct {
+// quotedOneOfGenerator is a light wrapper for oneOfGenerator that wraps the generated strings in single quotes.
+type quotedOneOfGenerator struct {
 	gen Generator
 }
 
 func NewQuotedOneOfGenerator(args config.Args) Generator {
-	return &QuotedOneOfGenerator{
+	return &quotedOneOfGenerator{
 		gen: NewOneOfGenerator(args),
 	}
 }
 
-func (g *QuotedOneOfGenerator) Next() string {
+func (g *quotedOneOfGenerator) Next() string {
 	return fmt.Sprintf("'%s'", g.gen.Next())
 }
 

@@ -14,7 +14,7 @@ func NewDatetimeNowGenerator(args config.Args) Generator {
 	return NewOneOfGenerator(args)
 }
 
-type DatetimeUniformGenerator struct {
+type datetimeUniformGenerator struct {
 	rng    *rand.Rand
 	dtFmt  string
 	minVal int64
@@ -22,8 +22,8 @@ type DatetimeUniformGenerator struct {
 }
 
 func NewDatetimeUniformGenerator(args config.Args) Generator {
-	g := DatetimeUniformGenerator{
-		rng:   NewRng(),
+	g := datetimeUniformGenerator{
+		rng:   newRng(),
 		dtFmt: "2006-01-02 15:04:05",
 	}
 	minVal := time.Date(1970, 1, 0, 0, 0, 0, 0, time.UTC).Unix()
@@ -42,7 +42,7 @@ func NewDatetimeUniformGenerator(args config.Args) Generator {
 	return &g
 }
 
-func (g *DatetimeUniformGenerator) Next() string {
+func (g *datetimeUniformGenerator) Next() string {
 	secs := g.rng.Int63n(g.spread) + g.minVal
 	return fmt.Sprintf("'%s'", time.Unix(secs, 0).Format(g.dtFmt))
 }

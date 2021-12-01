@@ -18,12 +18,13 @@ func RegisterGenerator(genType string, builder func(config.Args) Generator) {
 	generatorBuilders[genType] = builder
 }
 
+// GetGenerator will find a generator matching args.Type if one was registered or return an error.
 func GetGenerator(args config.Args) (Generator, error) {
 	builder, ok := generatorBuilders[args.Type]
 	if !ok {
 		return nil, fmt.Errorf("generator of type %s doesn't exist", args.Type)
 	}
-	return MakeNullable(builder(args), args.Nullable), nil
+	return MakeNullifier(builder(args), args.Nullable), nil
 }
 
 func init() {
@@ -54,9 +55,9 @@ func init() {
 	RegisterGenerator("string/uuid", NewUuidGenerator)
 }
 
-// NewRng is a proxy for random object generator, so we can monkey patch it in tests to make them deterministic
-var NewRng = NewRngFunc
+// newRng is a proxy for random object generator, so we can monkey patch it in tests to make them deterministic
+var newRng = newRngFunc
 
-func NewRngFunc() *rand.Rand {
+func newRngFunc() *rand.Rand {
 	return rand.New(rand.NewSource(time.Now().UnixNano()))
 }

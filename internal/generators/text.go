@@ -34,19 +34,19 @@ Suspendisse ac dui lacus. Integer lectus nisi, congue ac mi quis, porta lobortis
 var lipsumLen = len(lipsum)
 
 // TODO: what if Len is actually greater than lipsumLen?
-type TextGenerator struct {
+type textGenerator struct {
 	rng *rand.Rand
 	len int
 }
 
 func NewTextGenerator(args config.Args) Generator {
-	return &TextGenerator{
-		rng: NewRng(),
+	return &textGenerator{
+		rng: newRng(),
 		len: args.Length,
 	}
 }
 
-func (g *TextGenerator) Next() string {
+func (g *textGenerator) Next() string {
 	i := g.rng.Intn(lipsumLen - g.len)
 	return fmt.Sprintf("'%s'", lipsum[i:i+g.len])
 }

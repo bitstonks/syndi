@@ -24,7 +24,7 @@ func parseMinMaxFloat(args *config.Args) (float64, float64) {
 	return minVal, maxVal
 }
 
-type FloatUniformGenerator struct {
+type floatUniformGenerator struct {
 	rng    *rand.Rand
 	minVal float64
 	spread float64
@@ -32,19 +32,19 @@ type FloatUniformGenerator struct {
 
 func NewFloatUniformGenerator(args config.Args) Generator {
 	minVal, maxVal := parseMinMaxFloat(&args)
-	return &FloatUniformGenerator{
-		rng:    NewRng(),
+	return &floatUniformGenerator{
+		rng:    newRng(),
 		minVal: minVal,
 		spread: maxVal - minVal,
 	}
 }
 
-func (g *FloatUniformGenerator) Next() string {
+func (g *floatUniformGenerator) Next() string {
 	v := g.minVal + g.rng.Float64()*g.spread
 	return fmt.Sprintf("%g", v)
 }
 
-type FloatNormalGenerator struct {
+type floatNormalGenerator struct {
 	rng   *rand.Rand
 	mean  float64
 	stDev float64
@@ -55,18 +55,18 @@ type FloatNormalGenerator struct {
 // and with both MinVal and MaxVal one stDev away from the mean.
 func NewFloatNormalGenerator(args config.Args) Generator {
 	minVal, maxVal := parseMinMaxFloat(&args)
-	return &FloatNormalGenerator{
-		rng:   NewRng(),
+	return &floatNormalGenerator{
+		rng:   newRng(),
 		mean:  (maxVal + minVal) / 2,
 		stDev: (maxVal - minVal) / 2,
 	}
 }
 
-func (g *FloatNormalGenerator) Next() string {
+func (g *floatNormalGenerator) Next() string {
 	return fmt.Sprintf("%g", g.rng.NormFloat64()*g.stDev+g.mean)
 }
 
-type FloatExpGenerator struct {
+type floatExpGenerator struct {
 	rng    *rand.Rand
 	minVal float64
 	mean   float64
@@ -78,13 +78,13 @@ type FloatExpGenerator struct {
 // numbers generated will be bigger than args.MaxVal.
 func NewFloatExpGenerator(args config.Args) Generator {
 	minVal, maxVal := parseMinMaxFloat(&args)
-	return &FloatExpGenerator{
-		rng:    NewRng(),
+	return &floatExpGenerator{
+		rng:    newRng(),
 		minVal: minVal,
 		mean:   (maxVal - minVal) / 2,
 	}
 }
 
-func (g *FloatExpGenerator) Next() string {
+func (g *floatExpGenerator) Next() string {
 	return fmt.Sprintf("%g", g.rng.ExpFloat64()*g.mean+g.minVal)
 }

@@ -10,13 +10,13 @@ import (
 // It's here so that it can be monkey patched in tests
 var uuidGen = uuid.NewString
 
-type UuidGenerator struct{}
+type uuidGenerator struct{}
 
 // TODO: add length?
 func NewUuidGenerator(args config.Args) Generator {
-	return &UuidGenerator{}
+	return &uuidGenerator{}
 }
 
-func (g *UuidGenerator) Next() string {
+func (g *uuidGenerator) Next() string {
 	return fmt.Sprintf("'%s'", uuidGen())
 }
