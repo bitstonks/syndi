@@ -20,7 +20,7 @@ func NewIntUniformGenerator(args config.Args) Generator {
 	if err != nil {
 		log.Panicf("Unable to parse minVal: %s", err)
 	}
-	maxVal, err := strconv.ParseInt(args.MinVal, 10, 64)
+	maxVal, err := strconv.ParseInt(args.MaxVal, 10, 64)
 	if err != nil {
 		log.Panicf("Unable to parse minVal: %s", err)
 	}

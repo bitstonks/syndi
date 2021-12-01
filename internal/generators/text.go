@@ -48,5 +48,5 @@ func NewTextGenerator(args config.Args) Generator {
 
 func (g *TextGenerator) Next() string {
 	i := g.rng.Intn(lipsumLen - g.len)
-	return fmt.Sprintf("%q", lipsum[i:i+g.len])
+	return fmt.Sprintf("'%s'", lipsum[i:i+g.len])
 }

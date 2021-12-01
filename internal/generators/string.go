@@ -1,6 +1,7 @@
 package generators
 
 import (
+	"fmt"
 	"math/rand"
 
 	"github.com/bitstonks/syndi/internal/config"
@@ -29,5 +30,6 @@ func (g *StringGenerator) Next() string {
 	for i := range b {
 		b[i] = g.all[g.rng.Intn(len(g.all))]
 	}
-	return string(b)
+	return fmt.Sprintf("'%s'", string(b))
+
 }

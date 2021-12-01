@@ -14,7 +14,7 @@ func parseMinMaxFloat(args *config.Args) (float64, float64) {
 	if err != nil {
 		log.Panicf("Unable to parse minVal: %s", err)
 	}
-	maxVal, err := strconv.ParseFloat(args.MinVal, 64)
+	maxVal, err := strconv.ParseFloat(args.MaxVal, 64)
 	if err != nil {
 		log.Panicf("Unable to parse maxVal: %s", err)
 	}

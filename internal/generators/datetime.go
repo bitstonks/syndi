@@ -44,7 +44,7 @@ func NewDatetimeUniformGenerator(args config.Args) Generator {
 
 func (g *DatetimeUniformGenerator) Next() string {
 	secs := g.rng.Int63n(g.spread) + g.minVal
-	return fmt.Sprintf("%q", time.Unix(secs, 0).Format(g.dtFmt))
+	return fmt.Sprintf("'%s'", time.Unix(secs, 0).Format(g.dtFmt))
 }
 
 func parseDT(dtFmt, dt string, fallback int64) int64 {

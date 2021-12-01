@@ -27,6 +27,7 @@ func GetGenerator(args config.Args) (Generator, error) {
 }
 
 func init() {
+	generatorBuilders = make(map[string]func(config.Args) Generator)
 	// Since the interface always uses strings we can use a unified (weighted) multiple choice random generator
 	// for all column types. We do give up on some validation by doing that.
 	// TODO: have specialized constructors that validate the data but still use OneOfGenerator behind the scenes
@@ -44,6 +45,7 @@ func init() {
 	RegisterGenerator("float", NewFloatUniformGenerator)
 	RegisterGenerator("float/uniform", NewFloatUniformGenerator)
 	RegisterGenerator("float/normal", NewFloatNormalGenerator)
+	RegisterGenerator("float/exp", NewFloatExpGenerator)
 	RegisterGenerator("int", NewIntUniformGenerator)
 	RegisterGenerator("int/uniform", NewIntUniformGenerator)
 	RegisterGenerator("string", NewStringGenerator)
@@ -52,6 +54,9 @@ func init() {
 	RegisterGenerator("string/uuid", NewUuidGenerator)
 }
 
-func NewRng() *rand.Rand {
+// NewRng is a proxy for random object generator, so we can monkey patch it in tests to make them deterministic
+var NewRng = NewRngFunc
+
+func NewRngFunc() *rand.Rand {
 	return rand.New(rand.NewSource(time.Now().UnixNano()))
 }
