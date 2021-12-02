@@ -22,5 +22,5 @@ func ExampleNewDatetimeUniformGenerator() {
 	}
 	g, _ := GetGenerator(args)
 	fmt.Println(g.Next())
-	// Output: '2016-12-20 00:42:51'
+	// Output: '2016-12-19 23:42:51'
 }
