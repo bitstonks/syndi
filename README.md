@@ -13,63 +13,108 @@ Data definitions are specified via a YAML config file, one config is (currently)
 
 ## Available data generators
 
-> **_NOTE:_** this list was maybe accurate at the time of writing but might not be at the time of you reading it.
-> Consider these values as approximate and see
-> [examples in go docs](https://pkg.go.dev/github.com/bitstonks/syndi/internal/generators#Generator)
-> for more up-to-date information.
+> **_NOTE:_** this list was up-to-date at the time of writing but might not be at the time of you reading it.
+> Consider these values as approximation and see
+> [examples in go docs](https://pkg.go.dev/github.com/bitstonks/syndi/internal/generators#pkg-examples)
+> for more accurate information.
 
-|       Type/Parameter        | Description |
-| ---------------   | ----------- |
-| **Type: bool** | Generates 50% `0` and 50% `1`  |
-| ======== | ================= |
-| **Type: bool/oneof** | Generates `0` or `1` depending on OneOf weights. |
-| OneOf: str | Semicolon separated values with optional weights separated by colons. (e.g. `"1"`, `"0:5;1:95"`) |
-| ======== | ================= |
-| **Type: datetime, datetime/now** | Generates `NOW()`  |
-| ======== | ================= |
-| **Type: datetime/uniform** | Dates between MinVal and MaxVal (format: `2006-01-02 15:04:05`). |
-| MinVal: date  | Minimal date to generate (default is unix epoch). |
-| MaxVal: date  | Maximal date to generate (default is current time). |
-| ======== | ================= |
-| **Type: datetime/oneof** | One of the given dates (format: `2006-01-02 15:04:05`). |
-| OneOf: str | Semicolon separated values with weights separated by colons. <br>**NOTE:** weights are mandatory else seconds will be interpreted as weights resulting in an invalid datetime.|
-| ======== | ================= |
-| **Type: float, float/uniform** | Generates random floats in [MinVal, MaxVal) |
-| MinVal: float  | Minimal value to generate. |
-| MaxVal: float  | Maximal value to generate.|
-| ======== | ================= |
-| **Type: float, float/normal** | Generates floats from \[-math.MaxFloat64,  +math.MaxFloat64] with normal distribution where `mean=(MinVal+MaxVal)/2` and `stDev=(MaxVal-MinVal)/2`. |
-| MinVal: float  | Value one standard deviation below the mean. |
-| MaxVal: float  | Value one standard deviation above the mean.|
-| ======== | ================= |
-| **Type: float, float/exp** | Generates floats from (MinVal,  math.MaxFloat64] with exponential distribution with `mean=(MinVal+MaxVal)/2` and ~15% of values are bigger than MaxVal. |
-| MinVal: float  | Minimal value to generate. |
-| MaxVal: float  | Defines how spread out you want the numbers to be. Mean value will be the average of MinVal and MaxVal.|
-| ======== | ================= |
-| **Type: float/oneof** | Choose one of the options given. |
-| OneOf: str | Semicolon separated values with optional weights separated by colons. (e.g. `"1.5;2.1;4.0"`, `"0.1:3;2.5:10"`) |
-| ======== | ================= |
-| **Type: int, int/uniform** | Generates random integers in [MinVal, MaxVal) |
-| MinVal: int  | Minimal value to generate (inclusive). |
-| MaxVal: int  | Maximal value to generate (non-inclusive).|
-| ======== | ================= |
-| **Type: int/oneof** | Chooses one of the options given. |
-| OneOf: str | Semicolon separated values with optional weights separated by colons. (e.g. `"1;2;4;8"`, `"1:3;2:10"`) |
-| ======== | ================= |
-| **Type: string, string/rand** | Generates a random string of given length. |
-| Length: int | Number of characters in the output string. |
-| OneOf: str | (Optional) Character set to pick the characters from.<br>Default: `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789` |
-| ======== | ================= |
-| **Type: string/text** | Generates random sections of lorem ipsum text of given length. |
-| Length: int | Number of characters in the output string. |
-| ======== | ================= |
-| **Type: string/uuid** | Generates a 36 characters long universally unique string. |
-| ======== | ================= |
-| **Type: string/oneof** | Chooses one of the options given. |
-| OneOf: str | Semicolon separated values with optional weights separated by colons. (e.g. `yes;no`, `yes:10;no:1;maybe:4`) |
-| ======== | ================= |
-| **Nullable (any type)** | Any type can be made to return part of the results to be `NULL` by setting the Nullable parameter. |
-| Nullable: float | A number between 0 and 1 defining the probability of each value to be `NULL`. |
+Below are examples of configuration for different kind of generators. These can be used as values in the `Columns`
+section of your config. For full config structure you can check out the
+[docs on config.Config](https://pkg.go.dev/github.com/bitstonks/syndi/internal/config#Config).
+
+```yaml
+example1:
+  # Generates 50% `0` and 50% `1`.
+  Type: bool
+example2:
+  # Generates `0` or `1` depending on OneOf weights.
+  Type: bool/oneof
+  OneOf: 0:1;1:30  # `1` is 30 times more probable than `0`.
+example3:
+  # Generates `NOW()`.
+  Type: datetime  # Alias for `datetime/now`.
+example4:
+  # Generates random dates uniformly at random from [MinVal, MaxVal).
+  Type: datetime/uniform
+  MinVal: 2011-08-15 18:18:18  # Default is `1970-01-01 00:00:00`.
+  MaxVal: 2021-12-01 21:54:35  # Default is current time.
+example5:
+  # Selects one of the dates given in OneOf.
+  Type: datetime/oneof
+  # Weights are mandatory, because dates include colons.
+  OneOf: 2011-08-15 18:18:18:1;1970-01-01 00:00:00:1
+example6:
+  # Generates random floats uniformly at random from [MinVal, MaxVal).
+  Type: float  # Alias for `float/uniform`.
+  MinVal: -0.1  # Minimal value.
+  MaxVal: 10.9  # Maximal value.
+example7:
+  # Generates floats from [-math.MaxFloat64, math.MaxFloat64] with normal distribution
+  # `mean=(MinVal+MaxVal)/2=20` and `stDev=(MaxVal-MinVal)/2=10`.
+  Type: float/normal
+  MinVal: 10  # 16% of values will be smaller than this (mean - stDev).
+  MaxVal: 30  # 16% of values will be greater than this (mean + stDev).
+example8:
+  # Generates floats from (MinVal,  math.MaxFloat64] with exponential distribution
+  # `mean=(MinVal+MaxVal)/2` and ~15% of values are greater than MaxVal.
+  Type: float/exp
+  MinVal: 10  # All values will be greater than this.
+  MaxVal: 30  # 15% of values will be greater than this.
+example9:
+  # Selects one of the numbers given in OneOf.
+  Type: float/oneof
+  OneOf: 0.5;1.5;6.5:10  # `0.5`, `1.5`, or `6.5` with the latter being 10 times more likely.
+example10:
+  # Generates random ints uniformly at random from [MinVal, MaxVal).
+  Type: int  # Alias for `int/uniform`.
+  MinVal: -10  # Minimal value.
+  MaxVal: 100  # Maximal value.
+example11:
+  # Selects one of the numbers given in OneOf.
+  Type: int/oneof
+  OneOf: 0;1;6:10  # `0`, `1`, or `6` with the latter being 10 times more likely.
+example12:
+  # Generates random strings of given length.
+  Type: string  # Alias for `string/rand`.
+  Length: 15  # Strings will be 15 characters long.
+  # [Optional] Provide character set to pick from.
+  OneOf: "abc xyz"  # Default is letters (upper/lower case) and numbers.
+example13:
+  # Generates random sections of lorem ipsum text of given length.
+  Type: string/text
+  Length: 150  # Number of characters in the output string.
+example14:
+  # Generates a 36 characters long universally unique string.
+  Type: string/uuid
+example15:
+  # Selects one of the options given in OneOf.
+  Type: string/oneof
+  OneOf: yes:95;no:5  # Generates `yes` 95% of the time and `no` 5% of the time.
+example16:
+  # Any type can be partly `NULL` by setting the nullable field.
+  Type: string/uuid
+  Nullable: 0.3  # This will be `NULL` 30% of the time and random UUID 70% of the time.
+```
+### Additional note on the OneOf field
+Some extra information should be provided on the topic of the `OneOf` field. In the `*/oneof` generator types this field
+is used to list all the possible values and their respective weights. Different options are delimited with semicolons
+whereas an option and its weight are delimited with a colon.
+```yaml
+OneOf: "<option 1>:<weight 1>;<option 2>:<weight 2>;...;<option n>:<weight n>"
+```
+Weights have to be non-negative integers, and they have to sum to a positive value (i.e. at least one has to be
+positive). The default value for weights is `1`, so you don't have to write them if you don't want to change them. The
+only exception being if the option itself includes one or more colons in which case you have to manually append `:1` to
+the end. There is currently no way for an option to include a literal `;`. See examples below:
+
+```yaml
+# All options have weight 1, so they will be picked uniformly at random.
+OneOf: "<option 1>;<option 2>;<option 3>"
+```
+```yaml
+# Options 1 and 3 have weight 1 and option 2 has weight 10 making it 10 times more likely to be picked.
+OneOf: "<option 1>;<option 2>:10;<option 3>"
+```
 
 ## Requirements
 
