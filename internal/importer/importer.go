@@ -44,7 +44,7 @@ func (im *Importer) EnableFK() error {
 }
 
 func (im *Importer) Import() error {
-	sqlPrefix := fmt.Sprintf("INSERT INTO %s (%s) VALUES ", im.cfg.DbTable, strings.Join(im.cols, ","))
+	sqlPrefix := fmt.Sprintf("INSERT INTO %s (%s) VALUES ", im.cfg.TableName, strings.Join(im.cols, ","))
 
 	for rem := im.cfg.TotalRecords; rem > 0; rem -= im.cfg.BatchSize {
 		log.Printf("loading a batch of max %d out of remaining %d records", im.cfg.BatchSize, rem)

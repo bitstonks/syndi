@@ -42,11 +42,10 @@ type ColumnDef struct {
 
 // TableDef describes one particular database table. Its data is (mostly) loaded from a YAML file.
 type TableDef struct {
-	DbDSN        string               `yaml:"DbDSN" validate:"required"`
-	DbTable      string               `yaml:"DbTable" validate:"required"`
+	TableName    string               `yaml:"TableName" validate:"required"`
 	TotalRecords int                  `yaml:"TotalRecords" validate:"required,gt=0"`
 	BatchSize    int                  `yaml:"BatchSize" validate:"required,gt=0"`
-	SafeImport   bool                 `yaml:"SafeImport"`
+	SafeImport   bool                 // TODO: should this be global?
 	Columns      map[string]ColumnDef `yaml:"Columns" validate:"required,dive,keys,required,endkeys"`
 }
 
