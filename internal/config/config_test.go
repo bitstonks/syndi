@@ -64,10 +64,20 @@ func TestRunArgs(t *testing.T) {
 func TestLoadConfig(t *testing.T) {
 	currWd, err := os.Getwd()
 	assert.NoError(t, err)
-
 	cfgPath := path.Join(currWd, "../../test/testdata/config-example.yaml")
-	cfg, err := LoadConfig(cfgPath)
+
+	args := RunArgs{
+		Database: "example",
+		Host:     "localhost",
+		Password: "root",
+		Port:     "3306",
+		Safe:     false,
+		Tables:   []string{cfgPath},
+		User:     "root",
+	}
+
+	_, defs, err := LoadConfig(args)
 	assert.NoError(t, err)
-	assert.False(t, cfg.SafeImport) // zero value
-	assert.Equal(t, 5031, cfg.TotalRecords)
+	assert.False(t, defs[0].SafeImport) // zero value
+	assert.Equal(t, 5031, defs[0].TotalRecords)
 }

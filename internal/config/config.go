@@ -49,21 +49,50 @@ type TableDef struct {
 	Columns      map[string]ColumnDef `yaml:"Columns" validate:"required,dive,keys,required,endkeys"`
 }
 
-func LoadConfig(filename string) (*TableDef, error) {
-	yamlFile, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return nil, err
-	}
-	c := &TableDef{}
-	err = yaml.Unmarshal(yamlFile, &c)
-	if err != nil {
-		return nil, err
-	}
-	if c.BatchSize > c.TotalRecords {
-		log.Println("Setting BatchSize to equal TotalRecords.")
-		c.BatchSize = c.TotalRecords
-	}
+func LoadConfig(args RunArgs) (string, []*TableDef, error) {
+	dsn := args.GetDSN()
+	tables := make([]*TableDef, 0)
 	validate := validator.New()
-	err = validate.Struct(c)
-	return c, err
+
+	err := validate.Struct(args)
+	if err != nil {
+		reportValidationErrors(err)
+		return dsn, tables, err
+	}
+
+	// TODO: allow for entire folders to be passed in and implement searching for YAML files in them
+	for _, tableFile := range args.Tables {
+		yamlFile, err := ioutil.ReadFile(tableFile)
+		if err != nil {
+			return dsn, tables, err
+		}
+		tdef := &TableDef{}
+		err = yaml.Unmarshal(yamlFile, &tdef)
+		if err != nil {
+			return dsn, tables, err
+		}
+		if tdef.BatchSize > tdef.TotalRecords {
+			log.Printf("%s: BatchSize larger than TotalRecords, setting the former to equal the latter.\n", tableFile)
+			tdef.BatchSize = tdef.TotalRecords
+		}
+		err = validate.Struct(tdef)
+		if err != nil {
+			reportValidationErrors(err)
+			return dsn, tables, err
+		}
+		tdef.SafeImport = args.Safe
+		tables = append(tables, tdef)
+	}
+
+	return dsn, tables, err
+}
+
+func reportValidationErrors(err error) {
+	if _, ok := err.(*validator.InvalidValidationError); ok {
+		fmt.Println(err)
+	}
+	for _, er := range err.(validator.ValidationErrors) {
+		fmt.Println(er)
+	}
+	fmt.Println()
 }
