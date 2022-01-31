@@ -11,6 +11,21 @@ can choose integers from a range of predefined values that will serve as some co
 
 Data definitions are specified via a YAML config file, one config is (currently) bound to a single database table.
 
+## Usage
+
+Clone the repo and compile the binary. The `-h` command-line flag hints at possible parameters
+```shell
+$ ./syndi -h
+...
+```
+
+You must pass at least one table definition YAML file, for example.
+```shell
+$ ./syndi users.yaml
+```
+
+See `test/testdata/config-example.yaml` and generator definitions in the next paragraph for details.
+
 ## Available data generators
 
 > **_NOTE:_** this list was up-to-date at the time of writing but might not be at the time of you reading it.
