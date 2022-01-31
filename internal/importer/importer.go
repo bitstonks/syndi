@@ -13,12 +13,12 @@ import (
 
 type Importer struct {
 	db   *sql.DB
-	cfg  *config.Config
+	cfg  *config.TableDef
 	cols []string
 	gens []generators.Generator
 }
 
-func NewImporter(db *sql.DB, cfg *config.Config) *Importer {
+func NewImporter(db *sql.DB, cfg *config.TableDef) *Importer {
 	im := Importer{db: db, cfg: cfg}
 	im.cols, im.gens = prepareColumnGenerators(cfg.Columns)
 	return &im

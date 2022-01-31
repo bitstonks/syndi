@@ -40,7 +40,8 @@ type ColumnDef struct {
 	Length   int     `yaml:"Length" validate:"optional"`
 }
 
-type Config struct {
+// TableDef describes one particular database table. Its data is (mostly) loaded from a YAML file.
+type TableDef struct {
 	DbDSN        string               `yaml:"DbDSN" validate:"required"`
 	DbTable      string               `yaml:"DbTable" validate:"required"`
 	TotalRecords int                  `yaml:"TotalRecords" validate:"required,gt=0"`
@@ -49,12 +50,12 @@ type Config struct {
 	Columns      map[string]ColumnDef `yaml:"Columns" validate:"required,dive,keys,required,endkeys"`
 }
 
-func LoadConfig(filename string) (*Config, error) {
+func LoadConfig(filename string) (*TableDef, error) {
 	yamlFile, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
-	c := &Config{}
+	c := &TableDef{}
 	err = yaml.Unmarshal(yamlFile, &c)
 	if err != nil {
 		return nil, err
