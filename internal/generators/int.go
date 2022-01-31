@@ -15,7 +15,7 @@ type intUniformGenerator struct {
 	spread int // minVal + spread non-inclusive
 }
 
-func NewIntUniformGenerator(args config.Args) Generator {
+func NewIntUniformGenerator(args config.ColumnDef) Generator {
 	minVal, err := strconv.ParseInt(args.MinVal, 10, 64)
 	if err != nil {
 		log.Panicf("Unable to parse minVal: %s", err)

@@ -30,7 +30,8 @@ func (a RunArgs) GetDSN() string {
 	return dsn
 }
 
-type Args struct {
+// ColumnDef defines the type of data we want inserted into a single column of a particular database table.
+type ColumnDef struct {
 	Type     string  `yaml:"Type" validate:"required"`
 	Nullable float64 `yaml:"Nullable" validate:"optional"`
 	MinVal   string  `yaml:"MinVal" validate:"optional"`
@@ -40,12 +41,12 @@ type Args struct {
 }
 
 type Config struct {
-	DbDSN        string          `yaml:"DbDSN" validate:"required"`
-	DbTable      string          `yaml:"DbTable" validate:"required"`
-	TotalRecords int             `yaml:"TotalRecords" validate:"required,gt=0"`
-	BatchSize    int             `yaml:"BatchSize" validate:"required,gt=0"`
-	SafeImport   bool            `yaml:"SafeImport"`
-	Columns      map[string]Args `yaml:"Columns" validate:"required,dive,keys,required,endkeys"`
+	DbDSN        string               `yaml:"DbDSN" validate:"required"`
+	DbTable      string               `yaml:"DbTable" validate:"required"`
+	TotalRecords int                  `yaml:"TotalRecords" validate:"required,gt=0"`
+	BatchSize    int                  `yaml:"BatchSize" validate:"required,gt=0"`
+	SafeImport   bool                 `yaml:"SafeImport"`
+	Columns      map[string]ColumnDef `yaml:"Columns" validate:"required,dive,keys,required,endkeys"`
 }
 
 func LoadConfig(filename string) (*Config, error) {

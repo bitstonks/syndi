@@ -13,7 +13,7 @@ var uuidGen = uuid.NewString
 type uuidGenerator struct{}
 
 // TODO: add length?
-func NewUuidGenerator(args config.Args) Generator {
+func NewUuidGenerator(args config.ColumnDef) Generator {
 	return &uuidGenerator{}
 }
 

@@ -6,7 +6,7 @@ import (
 )
 
 func ExampleNewIntUniformGenerator() {
-	args := config.Args{
+	args := config.ColumnDef{
 		Type:   "int", // alias for "int/uniform"
 		MinVal: "-50", // inclusive
 		MaxVal: "202", // non-inclusive

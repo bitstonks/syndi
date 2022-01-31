@@ -65,7 +65,7 @@ func min(a, b int) int {
 	return b
 }
 
-func prepareColumnGenerators(columnsConfig map[string]config.Args) (cols []string, gens []generators.Generator) {
+func prepareColumnGenerators(columnsConfig map[string]config.ColumnDef) (cols []string, gens []generators.Generator) {
 	for col := range columnsConfig {
 		cols = append(cols, col)
 	}

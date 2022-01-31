@@ -12,14 +12,14 @@ type Generator interface {
 	Next() string
 }
 
-var generatorBuilders map[string]func(config.Args) Generator
+var generatorBuilders map[string]func(config.ColumnDef) Generator
 
-func RegisterGenerator(genType string, builder func(config.Args) Generator) {
+func RegisterGenerator(genType string, builder func(config.ColumnDef) Generator) {
 	generatorBuilders[genType] = builder
 }
 
 // GetGenerator will find a generator matching args.Type if one was registered or return an error.
-func GetGenerator(args config.Args) (Generator, error) {
+func GetGenerator(args config.ColumnDef) (Generator, error) {
 	builder, ok := generatorBuilders[args.Type]
 	if !ok {
 		return nil, fmt.Errorf("generator of type %s doesn't exist", args.Type)
@@ -28,7 +28,7 @@ func GetGenerator(args config.Args) (Generator, error) {
 }
 
 func init() {
-	generatorBuilders = make(map[string]func(config.Args) Generator)
+	generatorBuilders = make(map[string]func(config.ColumnDef) Generator)
 	// Since the interface always uses strings we can use a unified (weighted) multiple choice random generator
 	// for all column types. We do give up on some validation by doing that.
 	// TODO: have specialized constructors that validate the data but still use OneOfGenerator behind the scenes

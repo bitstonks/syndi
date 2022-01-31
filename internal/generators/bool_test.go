@@ -6,7 +6,7 @@ import (
 )
 
 func ExampleNewBoolGenerator() {
-	args := config.Args{
+	args := config.ColumnDef{
 		Type: "bool",
 	}
 	g, _ := GetGenerator(args)
@@ -19,7 +19,7 @@ func ExampleNewBoolGenerator() {
 }
 
 func ExampleNewBoolGenerator_oneof() {
-	args := config.Args{
+	args := config.ColumnDef{
 		Type:  "bool/oneof",
 		OneOf: "0:20;1:1", // 0 has 20x probability over 1
 	}

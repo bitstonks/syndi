@@ -13,7 +13,7 @@ type stringGenerator struct {
 	all []rune
 }
 
-func NewStringGenerator(args config.Args) Generator {
+func NewStringGenerator(args config.ColumnDef) Generator {
 	all := []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 	if len(args.OneOf) > 0 {
 		all = []rune(args.OneOf)
