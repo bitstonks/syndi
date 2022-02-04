@@ -39,7 +39,7 @@ type textGenerator struct {
 	len int
 }
 
-func NewTextGenerator(args config.Args) Generator {
+func NewTextGenerator(args config.ColumnDef) Generator {
 	return &textGenerator{
 		rng: newRng(),
 		len: args.Length,

@@ -23,7 +23,7 @@ func init() {
 	}
 }
 
-type readmeConfig map[string]config.Args
+type readmeConfig map[string]config.ColumnDef
 
 func loadConfigFromReadme() (readmeConfig, error) {
 	var confData []byte

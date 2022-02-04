@@ -19,7 +19,7 @@ type oneOfGenerator struct {
 }
 
 // NewOneOfGenerator constructs a oneOfGenerator
-func NewOneOfGenerator(args config.Args) Generator {
+func NewOneOfGenerator(args config.ColumnDef) Generator {
 	weights, total := getMultipleChoice(args.OneOf)
 	return &oneOfGenerator{
 		rng:     newRng(),
@@ -44,7 +44,7 @@ type quotedOneOfGenerator struct {
 	gen Generator
 }
 
-func NewQuotedOneOfGenerator(args config.Args) Generator {
+func NewQuotedOneOfGenerator(args config.ColumnDef) Generator {
 	return &quotedOneOfGenerator{
 		gen: NewOneOfGenerator(args),
 	}

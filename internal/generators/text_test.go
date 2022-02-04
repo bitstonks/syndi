@@ -6,7 +6,7 @@ import (
 )
 
 func ExampleNewTextGenerator() {
-	args := config.Args{
+	args := config.ColumnDef{
 		Type:   "string/text",
 		Length: 50,
 	}

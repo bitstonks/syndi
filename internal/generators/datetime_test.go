@@ -6,7 +6,7 @@ import (
 )
 
 func ExampleNewDatetimeNowGenerator() {
-	args := config.Args{
+	args := config.ColumnDef{
 		Type: "datetime", // alias for "datetime/now"
 	}
 	g, _ := GetGenerator(args)
@@ -15,7 +15,7 @@ func ExampleNewDatetimeNowGenerator() {
 }
 
 func ExampleNewDatetimeUniformGenerator() {
-	args := config.Args{
+	args := config.ColumnDef{
 		Type:   "datetime/uniform",
 		MinVal: "2011-08-15 18:18:18", // Default is 1970-01-01 00:00:00
 		MaxVal: "2021-12-01 21:54:35", // Default is current time

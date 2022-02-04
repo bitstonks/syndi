@@ -6,7 +6,7 @@ import (
 )
 
 func ExampleNewUuidGenerator() {
-	args := config.Args{
+	args := config.ColumnDef{
 		Type: "string/uuid",
 	}
 	g, _ := GetGenerator(args)

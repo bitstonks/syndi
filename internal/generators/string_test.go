@@ -6,7 +6,7 @@ import (
 )
 
 func ExampleNewStringGenerator() {
-	args := config.Args{
+	args := config.ColumnDef{
 		Type:   "string", // alias for string/rand
 		Length: 15,
 	}
@@ -16,7 +16,7 @@ func ExampleNewStringGenerator() {
 }
 
 func ExampleNewStringGenerator_charset() {
-	args := config.Args{
+	args := config.ColumnDef{
 		Type:   "string/rand",
 		Length: 5,
 		OneOf:  " abcd", // choose the charset you want to pick from

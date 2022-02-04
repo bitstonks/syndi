@@ -9,7 +9,7 @@ import (
 	"github.com/bitstonks/syndi/internal/config"
 )
 
-func NewDatetimeNowGenerator(args config.Args) Generator {
+func NewDatetimeNowGenerator(args config.ColumnDef) Generator {
 	args.OneOf = "NOW()"
 	return NewOneOfGenerator(args)
 }
@@ -21,7 +21,7 @@ type datetimeUniformGenerator struct {
 	spread int64
 }
 
-func NewDatetimeUniformGenerator(args config.Args) Generator {
+func NewDatetimeUniformGenerator(args config.ColumnDef) Generator {
 	g := datetimeUniformGenerator{
 		rng:   newRng(),
 		dtFmt: "2006-01-02 15:04:05",

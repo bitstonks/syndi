@@ -4,7 +4,7 @@ import (
 	"github.com/bitstonks/syndi/internal/config"
 )
 
-func NewBoolGenerator(args config.Args) Generator {
+func NewBoolGenerator(args config.ColumnDef) Generator {
 	args.OneOf = "0;1"
 	return NewOneOfGenerator(args)
 }

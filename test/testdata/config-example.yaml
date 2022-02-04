@@ -1,8 +1,6 @@
-DbDSN: <user>:<password>@tcp(localhost:28000)/bitstamp_dev?parseTime=true&interpolateParams=true
-DbTable: account_walletdeposit
+TableName: account_walletdeposit
 TotalRecords: 5031
 BatchSize: 700
-SafeImport: no
 Columns:
   user_id:
     type: int/uniform

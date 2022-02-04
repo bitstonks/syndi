@@ -6,7 +6,7 @@ import (
 )
 
 func ExampleNewOneOfGenerator_uniform() {
-	args := config.Args{
+	args := config.ColumnDef{
 		Type:  "int/oneof",
 		OneOf: "1;2;4;8;16",
 	}
@@ -17,7 +17,7 @@ func ExampleNewOneOfGenerator_uniform() {
 }
 
 func ExampleNewOneOfGenerator_weighted() {
-	args := config.Args{
+	args := config.ColumnDef{
 		Type: "int/oneof",
 		// 2 is as likely as 8, but 5 is twice as likely as 2 and 10 three times as likely as 2.
 		// Weight '1' is implicitly added to choice 8. And 90 will never be picked.
@@ -30,7 +30,7 @@ func ExampleNewOneOfGenerator_weighted() {
 }
 
 func ExampleNewQuotedOneOfGenerator_uniform() {
-	args := config.Args{
+	args := config.ColumnDef{
 		Type:  "datetime/oneof",
 		OneOf: "yes;no",
 	}
@@ -41,7 +41,7 @@ func ExampleNewQuotedOneOfGenerator_uniform() {
 }
 
 func ExampleNewQuotedOneOfGenerator_weighted() {
-	args := config.Args{
+	args := config.ColumnDef{
 		Type:  "string/oneof",
 		OneOf: "yes:98;no:1;maybe:1",
 	}

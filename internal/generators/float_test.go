@@ -6,7 +6,7 @@ import (
 )
 
 func ExampleNewFloatUniformGenerator() {
-	args := config.Args{
+	args := config.ColumnDef{
 		Type:   "float", // alias for "float/uniform"
 		MinVal: "-1.5",
 		MaxVal: "0.36",
@@ -18,7 +18,7 @@ func ExampleNewFloatUniformGenerator() {
 }
 
 func ExampleNewFloatNormalGenerator() {
-	args := config.Args{
+	args := config.ColumnDef{
 		Type:   "float/normal",
 		MinVal: "10.0", // mean - stdev
 		MaxVal: "30.0", // mean + stdev
@@ -30,7 +30,7 @@ func ExampleNewFloatNormalGenerator() {
 }
 
 func ExampleNewFloatExpGenerator() {
-	args := config.Args{
+	args := config.ColumnDef{
 		Type:   "float/exp",
 		MinVal: "10.0",
 		MaxVal: "30.0", // MinVal + 1/lambda

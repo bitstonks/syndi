@@ -6,7 +6,7 @@ import (
 )
 
 func ExampleMakeNullable_half() {
-	args := config.Args{
+	args := config.ColumnDef{
 		Type:     "oneof",
 		OneOf:    "ok", // only possible non-null value is 'ok'
 		Nullable: 0.2,  // NULL 20% of time
@@ -20,7 +20,7 @@ func ExampleMakeNullable_half() {
 }
 
 func ExampleMakeNullable_always() {
-	args := config.Args{
+	args := config.ColumnDef{
 		Type:     "int/uniform", // uniform random number
 		MinVal:   "0",           // from including 0
 		MaxVal:   "100",         // to not including 100

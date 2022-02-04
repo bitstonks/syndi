@@ -9,7 +9,7 @@ import (
 	"github.com/bitstonks/syndi/internal/config"
 )
 
-func parseMinMaxFloat(args *config.Args) (float64, float64) {
+func parseMinMaxFloat(args *config.ColumnDef) (float64, float64) {
 	minVal, err := strconv.ParseFloat(args.MinVal, 64)
 	if err != nil {
 		log.Panicf("Unable to parse minVal: %s", err)
@@ -30,7 +30,7 @@ type floatUniformGenerator struct {
 	spread float64
 }
 
-func NewFloatUniformGenerator(args config.Args) Generator {
+func NewFloatUniformGenerator(args config.ColumnDef) Generator {
 	minVal, maxVal := parseMinMaxFloat(&args)
 	return &floatUniformGenerator{
 		rng:    newRng(),
@@ -53,7 +53,7 @@ type floatNormalGenerator struct {
 // Creates a random float generator with a normal distribution
 // with the mean equal to the mean of args.MinVal and args.MaxVal
 // and with both MinVal and MaxVal one stDev away from the mean.
-func NewFloatNormalGenerator(args config.Args) Generator {
+func NewFloatNormalGenerator(args config.ColumnDef) Generator {
 	minVal, maxVal := parseMinMaxFloat(&args)
 	return &floatNormalGenerator{
 		rng:   newRng(),
@@ -76,7 +76,7 @@ type floatExpGenerator struct {
 // where the minimal value is args.MinVal and the mean value is
 // (args.MinVal+args.MaxVal)/2. This means that around 15% of all
 // numbers generated will be bigger than args.MaxVal.
-func NewFloatExpGenerator(args config.Args) Generator {
+func NewFloatExpGenerator(args config.ColumnDef) Generator {
 	minVal, maxVal := parseMinMaxFloat(&args)
 	return &floatExpGenerator{
 		rng:    newRng(),

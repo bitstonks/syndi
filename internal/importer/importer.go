@@ -13,12 +13,12 @@ import (
 
 type Importer struct {
 	db   *sql.DB
-	cfg  *config.Config
+	cfg  *config.TableDef
 	cols []string
 	gens []generators.Generator
 }
 
-func NewImporter(db *sql.DB, cfg *config.Config) *Importer {
+func NewImporter(db *sql.DB, cfg *config.TableDef) *Importer {
 	im := Importer{db: db, cfg: cfg}
 	im.cols, im.gens = prepareColumnGenerators(cfg.Columns)
 	return &im
@@ -44,7 +44,7 @@ func (im *Importer) EnableFK() error {
 }
 
 func (im *Importer) Import() error {
-	sqlPrefix := fmt.Sprintf("INSERT INTO %s (%s) VALUES ", im.cfg.DbTable, strings.Join(im.cols, ","))
+	sqlPrefix := fmt.Sprintf("INSERT INTO %s (%s) VALUES ", im.cfg.TableName, strings.Join(im.cols, ","))
 
 	for rem := im.cfg.TotalRecords; rem > 0; rem -= im.cfg.BatchSize {
 		log.Printf("loading a batch of max %d out of remaining %d records", im.cfg.BatchSize, rem)
@@ -65,7 +65,7 @@ func min(a, b int) int {
 	return b
 }
 
-func prepareColumnGenerators(columnsConfig map[string]config.Args) (cols []string, gens []generators.Generator) {
+func prepareColumnGenerators(columnsConfig map[string]config.ColumnDef) (cols []string, gens []generators.Generator) {
 	for col := range columnsConfig {
 		cols = append(cols, col)
 	}
