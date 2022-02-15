@@ -49,6 +49,7 @@ func init() {
 	RegisterGenerator("float/exp", NewFloatExpGenerator)
 	RegisterGenerator("int", NewIntUniformGenerator)
 	RegisterGenerator("int/uniform", NewIntUniformGenerator)
+	RegisterGenerator("int/incremental", NewIncrementalGenerator)
 	RegisterGenerator("string", NewStringGenerator)
 	RegisterGenerator("string/rand", NewStringGenerator)
 	RegisterGenerator("string/text", NewTextGenerator)

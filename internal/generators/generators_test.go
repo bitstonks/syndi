@@ -64,22 +64,28 @@ func TestReadmeConfig(t *testing.T) {
 		t.Fatal(err)
 	}
 	tests := map[string]string{
-		"example1":  "1",
-		"example2":  "1",
-		"example3":  "NOW()",
-		"example4":  "'2016-12-19 23:42:51'",
-		"example5":  "'1970-01-01 00:00:00'",
-		"example6":  "2.577089127583518",
-		"example7":  "27.133352143941206",
-		"example8":  "12.181511239890659",
-		"example9":  "1.5",
-		"example10": "89",
-		"example11": "1",
-		"example12": "'bbbbyaayzcbzazx'",
-		"example13": "'ibulum in. Fusce lacinia, mi vel viverra viverra, lacus velit vulputate justo, nec vehicula ipsum enim et ligula. Sed sed convallis ex. Nam lobortis a'",
-		"example14": "'4d618232-ae05-46d0-a270-2931ef3d9add'",
-		"example15": "'yes'",
-		"example16": "NULL",
+		"exampleBool1":     "1",
+		"exampleBool2":     "1",
+		"exampleDatetime1": "NOW()",
+		"exampleDatetime2": "'2016-12-19 23:42:51'",
+		"exampleDatetime3": "'1970-01-01 00:00:00'",
+		"exampleFloat1":    "2.577089127583518",
+		"exampleFloat2":    "27.133352143941206",
+		"exampleFloat3":    "12.181511239890659",
+		"exampleFloat4":    "1.5",
+		"exampleInt1":      "89",
+		"exampleInt2":      "1",
+		"exampleInt3":      "10",
+		"exampleString1":   "'bbbbyaayzcbzazx'",
+		"exampleString2":   "'ibulum in. Fusce lacinia, mi vel viverra viverra, lacus velit vulputate justo, nec vehicula ipsum enim et ligula. Sed sed convallis ex. Nam lobortis a'",
+		"exampleString3":   "'4d618232-ae05-46d0-a270-2931ef3d9add'",
+		"exampleString4":   "'yes'",
+		"exampleString5":   "NULL",
+	}
+	for col := range c {
+		if _, ok := tests[col]; !ok {
+			t.Errorf("config has extra column %q", col)
+		}
 	}
 	for col, expected := range tests {
 		g, err := GetGenerator(c[col])

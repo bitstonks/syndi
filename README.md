@@ -38,74 +38,78 @@ section of your config. For full config structure you can check out the
 [docs on config.Config](https://pkg.go.dev/github.com/bitstonks/syndi/internal/config#Config).
 
 ```yaml
-example1:
+exampleBool1:
   # Generates 50% `0` and 50% `1`.
   Type: bool
-example2:
+exampleBool2:
   # Generates `0` or `1` depending on OneOf weights.
   Type: bool/oneof
   OneOf: 0:1;1:30  # `1` is 30 times more probable than `0`.
-example3:
+exampleDatetime1:
   # Generates `NOW()`.
   Type: datetime  # Alias for `datetime/now`.
-example4:
+exampleDatetime2:
   # Generates random dates uniformly at random from [MinVal, MaxVal).
   Type: datetime/uniform
   MinVal: 2011-08-15 18:18:18  # Default is `1970-01-01 00:00:00`.
   MaxVal: 2021-12-01 21:54:35  # Default is current time.
-example5:
+exampleDatetime3:
   # Selects one of the dates given in OneOf.
   Type: datetime/oneof
   # Weights are mandatory, because dates include colons.
   OneOf: 2011-08-15 18:18:18:1;1970-01-01 00:00:00:1
-example6:
+exampleFloat1:
   # Generates random floats uniformly at random from [MinVal, MaxVal).
   Type: float  # Alias for `float/uniform`.
   MinVal: -0.1  # Minimal value.
   MaxVal: 10.9  # Maximal value.
-example7:
+exampleFloat2:
   # Generates floats from [-math.MaxFloat64, math.MaxFloat64] with normal distribution
   # `mean=(MinVal+MaxVal)/2=20` and `stDev=(MaxVal-MinVal)/2=10`.
   Type: float/normal
   MinVal: 10  # 16% of values will be smaller than this (mean - stDev).
   MaxVal: 30  # 16% of values will be greater than this (mean + stDev).
-example8:
+exampleFloat3:
   # Generates floats from (MinVal,  math.MaxFloat64] with exponential distribution
   # `mean=(MinVal+MaxVal)/2` and ~15% of values are greater than MaxVal.
   Type: float/exp
   MinVal: 10  # All values will be greater than this.
   MaxVal: 30  # 15% of values will be greater than this.
-example9:
+exampleFloat4:
   # Selects one of the numbers given in OneOf.
   Type: float/oneof
   OneOf: 0.5;1.5;6.5:10  # `0.5`, `1.5`, or `6.5` with the latter being 10 times more likely.
-example10:
+exampleInt1:
   # Generates random ints uniformly at random from [MinVal, MaxVal).
   Type: int  # Alias for `int/uniform`.
   MinVal: -10  # Minimal value.
   MaxVal: 100  # Maximal value.
-example11:
+exampleInt2:
   # Selects one of the numbers given in OneOf.
   Type: int/oneof
   OneOf: 0;1;6:10  # `0`, `1`, or `6` with the latter being 10 times more likely.
-example12:
+exampleInt3:
+  # Generates incremental integers starting with MinVal.
+  Type: int/incremental
+  MinVal: 10  # The first number will be 10 then 11, 12,...
+exampleString1:
   # Generates random strings of given length.
   Type: string  # Alias for `string/rand`.
   Length: 15  # Strings will be 15 characters long.
   # [Optional] Provide character set to pick from.
   OneOf: "abc xyz"  # Default is letters (upper/lower case) and numbers.
-example13:
+exampleString2:
   # Generates random sections of lorem ipsum text of given length.
   Type: string/text
   Length: 150  # Number of characters in the output string.
-example14:
+exampleString3:
   # Generates a 36 characters long universally unique string.
   Type: string/uuid
-example15:
+exampleString4:
   # Selects one of the options given in OneOf.
   Type: string/oneof
   OneOf: yes:95;no:5  # Generates `yes` 95% of the time and `no` 5% of the time.
-example16:
+exampleString5:
   # Any type can be partly `NULL` by setting the nullable field.
   Type: string/uuid
   Nullable: 0.3  # This will be `NULL` 30% of the time and random UUID 70% of the time.
