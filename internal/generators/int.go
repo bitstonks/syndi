@@ -22,7 +22,7 @@ func NewIntUniformGenerator(args config.ColumnDef) Generator {
 	}
 	maxVal, err := strconv.ParseInt(args.MaxVal, 10, 64)
 	if err != nil {
-		log.Panicf("Unable to parse minVal: %s", err)
+		log.Panicf("Unable to parse maxVal: %s", err)
 	}
 	if minVal >= maxVal {
 		log.Panicf("minVal not smaller than maxVal: %d < %d", minVal, maxVal)
