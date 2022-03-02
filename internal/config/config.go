@@ -34,6 +34,7 @@ func (a RunArgs) GetDSN() string {
 type ColumnDef struct {
 	Type     string  `yaml:"Type" validate:"required"`
 	Nullable float64 `yaml:"Nullable" validate:"optional"`
+	First    string  `yaml:"First" validate:"optional"`
 	MinVal   string  `yaml:"MinVal" validate:"optional"`
 	MaxVal   string  `yaml:"MaxVal" validate:"optional"`
 	OneOf    string  `yaml:"OneOf" validate:"optional"`

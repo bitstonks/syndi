@@ -39,6 +39,8 @@ func init() {
 	RegisterGenerator("int/oneof", NewOneOfGenerator)
 	RegisterGenerator("string/oneof", NewQuotedOneOfGenerator)
 
+	RegisterGenerator("int/incremental-uniform", NewIntUniformIncrementalGenerator)
+
 	RegisterGenerator("bool", NewBoolGenerator)
 	RegisterGenerator("datetime", NewDatetimeNowGenerator)
 	RegisterGenerator("datetime/now", NewDatetimeNowGenerator)
