@@ -75,6 +75,7 @@ func TestReadmeConfig(t *testing.T) {
 		"float4":    "1.5",
 		"int1":      "89",
 		"int2":      "1",
+		"int3":      "10",
 		"string1":   "'bbbbyaayzcbzazx'",
 		"string2":   "'ibulum in. Fusce lacinia, mi vel viverra viverra, lacus velit vulputate justo, nec vehicula ipsum enim et ligula. Sed sed convallis ex. Nam lobortis a'",
 		"string3":   "'4d618232-ae05-46d0-a270-2931ef3d9add'",

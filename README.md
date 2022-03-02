@@ -88,6 +88,12 @@ int2:
   # Selects one of the numbers given in OneOf.
   Type: int/oneof
   OneOf: 0;1;6:10  # `0`, `1`, or `6` with the latter being 10 times more likely.
+int3:
+  # Each next number is a uniform random increment of the last generated number
+  Type: int/incremental-uniform
+  First: 10  # The value of the first returned value
+  MinVal: 1  # Increase by at least 1
+  MaxVal: 5  # Increase by less than 5
 string1:
   # Generates random strings of given length.
   Type: string  # Alias for `string/rand`.
