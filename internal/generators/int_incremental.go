@@ -25,7 +25,10 @@ func NewIntUniformIncrementalGenerator(args config.ColumnDef) Generator {
 }
 
 func (g *intUniformIncrementalGenerator) Next() string {
-	step, _ := strconv.ParseInt(g.generator.Next(), 10, 64)
+	step, err := strconv.ParseInt(g.generator.Next(), 10, 64)
+	if err != nil {
+		log.Panicf("int generator returned invalid int: %s", err)
+	}
 	result := atomic.AddInt64(&g.nextValue, step) - step
 	return fmt.Sprintf("%d", result)
 }
