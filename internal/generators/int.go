@@ -1,7 +1,6 @@
 package generators
 
 import (
-	"fmt"
 	"log"
 	"math/rand"
 	"strconv"
@@ -34,6 +33,6 @@ func NewIntUniformGenerator(args config.ColumnDef) Generator {
 	}
 }
 
-func (g *intUniformGenerator) Next() string {
-	return fmt.Sprintf("%d", g.rng.Intn(g.spread)+g.minVal)
+func (g *intUniformGenerator) Next() interface{} {
+	return g.rng.Intn(g.spread) + g.minVal
 }
