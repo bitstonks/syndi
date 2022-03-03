@@ -21,7 +21,7 @@ func MakeNullifier(gen Generator, nullable float64) Generator {
 	}
 }
 
-func (n *nullifier) Next() string {
+func (n *nullifier) Next() interface{} {
 	if n.rng.Float64() < n.nullable {
 		return "NULL"
 	}

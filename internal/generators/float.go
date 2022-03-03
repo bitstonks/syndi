@@ -1,7 +1,6 @@
 package generators
 
 import (
-	"fmt"
 	"log"
 	"math/rand"
 	"strconv"
@@ -39,9 +38,9 @@ func NewFloatUniformGenerator(args config.ColumnDef) Generator {
 	}
 }
 
-func (g *floatUniformGenerator) Next() string {
+func (g *floatUniformGenerator) Next() interface{} {
 	v := g.minVal + g.rng.Float64()*g.spread
-	return fmt.Sprintf("%g", v)
+	return v
 }
 
 type floatNormalGenerator struct {
@@ -62,8 +61,8 @@ func NewFloatNormalGenerator(args config.ColumnDef) Generator {
 	}
 }
 
-func (g *floatNormalGenerator) Next() string {
-	return fmt.Sprintf("%g", g.rng.NormFloat64()*g.stDev+g.mean)
+func (g *floatNormalGenerator) Next() interface{} {
+	return g.rng.NormFloat64()*g.stDev + g.mean
 }
 
 type floatExpGenerator struct {
@@ -85,6 +84,6 @@ func NewFloatExpGenerator(args config.ColumnDef) Generator {
 	}
 }
 
-func (g *floatExpGenerator) Next() string {
-	return fmt.Sprintf("%g", g.rng.ExpFloat64()*g.mean+g.minVal)
+func (g *floatExpGenerator) Next() interface{} {
+	return g.rng.ExpFloat64()*g.mean + g.minVal
 }

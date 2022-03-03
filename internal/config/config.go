@@ -39,6 +39,7 @@ type ColumnDef struct {
 	MaxVal   string  `yaml:"MaxVal" validate:"optional"`
 	OneOf    string  `yaml:"OneOf" validate:"optional"`
 	Length   int     `yaml:"Length" validate:"optional"`
+	Format   string  `yaml:"Format" validate:"optional"`
 }
 
 // TableDef describes one particular database table. Its data is (mostly) loaded from a YAML file.

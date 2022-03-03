@@ -58,6 +58,13 @@ datetime3:
   Type: datetime/oneof
   # Weights are mandatory, because dates include colons.
   OneOf: 2011-08-15 18:18:18:1;1970-01-01 00:00:00:1
+datetime4:
+  # Generates uniform random dates and formats them in US style with some extra text.
+  Type: datetime/uniform
+  MinVal: 2011-08-15 18:18:18
+  MaxVal: 2021-12-01 21:54:35
+  # Use magic date (2006-01-02 15:04:05) to insert date into format string.
+  Format: "'We have a meeting on 01/02/06'"
 float1:
   # Generates random floats uniformly at random from [MinVal, MaxVal).
   Type: float  # Alias for `float/uniform`.
@@ -79,6 +86,13 @@ float4:
   # Selects one of the numbers given in OneOf.
   Type: float/oneof
   OneOf: 0.5;1.5;6.5:10  # `0.5`, `1.5`, or `6.5` with the latter being 10 times more likely.
+float5:
+  # Generates json objects of form {"price": 0.5}.
+  Type: float/uniform
+  MinVal: 1.5
+  MaxVal: 10.9
+  # Use Go format string to format generated float (https://pkg.go.dev/fmt).
+  Format: '{"price": %.1f}'
 int1:
   # Generates random ints uniformly at random from [MinVal, MaxVal).
   Type: int  # Alias for `int/uniform`.
@@ -94,6 +108,21 @@ int3:
   First: 10  # The value of the first returned value
   MinVal: 1  # Increase by at least 1
   MaxVal: 5  # Increase by less than 5
+int4:
+  # Generates random ints uniformly at random from [MinVal, MaxVal).
+  Type: int/uniform
+  MinVal: 2
+  MaxVal: 10
+  # Use Go format string to format generated int (https://pkg.go.dev/fmt).
+  Format: "'I will eat %v donuts today.'"
+int5:
+  # Generate user nicknames in order: 'User #001', 'User #002', 'User #003',...
+  Type: int/incremental-uniform
+  First: 1
+  MinVal: 1
+  MaxVal: 2
+  # Use Go format string to prepend user and zero-pad the number (https://pkg.go.dev/fmt).
+  Format: "'User #%03d'"
 string1:
   # Generates random strings of given length.
   Type: string  # Alias for `string/rand`.
@@ -136,6 +165,22 @@ OneOf: "<option 1>;<option 2>;<option 3>"
 # Options 1 and 3 have weight 1 and option 2 has weight 10 making it 10 times more likely to be picked.
 OneOf: "<option 1>;<option 2>:10;<option 3>"
 ```
+
+### Additional note on Format field
+Sometimes generated plain values is not all that you want in your database. Format field allows you to define custom
+format string that syndi will use to stringify values. This is especially useful for datetimes, where formats are plenty
+and strings where the generated value may only be a part of a complex structure.
+
+There are two distinct cases when formatting values.
+* **Datetime** formatting is done by including go's magic date (2006-01-02 15:04:05) in the format string like you'd
+want to the resulting date to be formatted:
+  * ISO: `2006-01-02 15:04:05`,
+  * US date with AM/PM: `01/02/06 3:04PM`,
+  * Slovenian date only: `02.01.2006`.
+* For everything else use Go format string (see docs at https://pkg.go.dev/fmt).
+  * Zero-padded 3 digit integer: `%03d`,
+  * float rounded to two places: `%.2f`,
+  * arbitrary value surrounded by text: `Hello, %v!`.
 
 ## Requirements
 

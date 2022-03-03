@@ -1,7 +1,6 @@
 package generators
 
 import (
-	"fmt"
 	"math/rand"
 	"strings"
 
@@ -37,6 +36,7 @@ var lipsumLen = len(lipsum)
 type textGenerator struct {
 	rng *rand.Rand
 	len int
+	quotedFmt
 }
 
 func NewTextGenerator(args config.ColumnDef) Generator {
@@ -46,7 +46,7 @@ func NewTextGenerator(args config.ColumnDef) Generator {
 	}
 }
 
-func (g *textGenerator) Next() string {
+func (g *textGenerator) Next() interface{} {
 	i := g.rng.Intn(lipsumLen - g.len)
-	return fmt.Sprintf("'%s'", lipsum[i:i+g.len])
+	return lipsum[i : i+g.len]
 }

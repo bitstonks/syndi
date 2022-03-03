@@ -42,9 +42,13 @@ func NewDatetimeUniformGenerator(args config.ColumnDef) Generator {
 	return &g
 }
 
-func (g *datetimeUniformGenerator) Next() string {
+func (g *datetimeUniformGenerator) Next() interface{} {
 	secs := g.rng.Int63n(g.spread) + g.minVal
-	return fmt.Sprintf("'%s'", time.Unix(secs, 0).UTC().Format(g.dtFmt))
+	return time.Unix(secs, 0).UTC()
+}
+
+func (g *datetimeUniformGenerator) DefaultFmtString() string {
+	return fmt.Sprintf("'%s'", g.dtFmt)
 }
 
 func parseDT(dtFmt, dt string, fallback int64) int64 {

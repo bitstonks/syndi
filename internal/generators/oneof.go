@@ -1,7 +1,6 @@
 package generators
 
 import (
-	"fmt"
 	"log"
 	"math/rand"
 	"strconv"
@@ -28,7 +27,7 @@ func NewOneOfGenerator(args config.ColumnDef) Generator {
 	}
 }
 
-func (g *oneOfGenerator) Next() string {
+func (g *oneOfGenerator) Next() interface{} {
 	n := g.rng.Intn(g.total)
 	for _, w := range g.weights {
 		n -= w.weight
@@ -41,17 +40,14 @@ func (g *oneOfGenerator) Next() string {
 
 // quotedOneOfGenerator is a light wrapper for oneOfGenerator that wraps the generated strings in single quotes.
 type quotedOneOfGenerator struct {
-	gen Generator
+	*oneOfGenerator
+	quotedFmt
 }
 
 func NewQuotedOneOfGenerator(args config.ColumnDef) Generator {
 	return &quotedOneOfGenerator{
-		gen: NewOneOfGenerator(args),
+		oneOfGenerator: NewOneOfGenerator(args).(*oneOfGenerator),
 	}
-}
-
-func (g *quotedOneOfGenerator) Next() string {
-	return fmt.Sprintf("'%s'", g.gen.Next())
 }
 
 type weighted struct {

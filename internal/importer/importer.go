@@ -92,7 +92,7 @@ func generateBatch(size int, gens *[]generators.Generator) []string {
 	for i := 0; i < size; i++ {
 		single := make([]string, 0, genSize)
 		for j := 0; j < genSize; j++ {
-			single = append(single, (*gens)[j].Next())
+			single = append(single, fmt.Sprintf("%v", (*gens)[j].Next()))
 		}
 		res = append(res, "("+strings.Join(single, ",")+")")
 	}
