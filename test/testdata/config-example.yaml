@@ -3,39 +3,37 @@ TotalRecords: 5031
 BatchSize: 700
 Columns:
   user_id:
-    type: int/uniform
-    minVal: 1
-    maxVal: 2000
+    Type: int/uniform
+    MinVal: 1
+    MaxVal: 2000
   txid:
-    type: string/uuid
+    Type: string/uuid
   btc:
-    type: float
-    minVal: 0.0
-    maxVal: 123.4
+    Type: float
+    MinVal: 0.0
+    MaxVal: 123.4
   datetime:
-    type: datetime/rand
-    minVal: 2012-01-01 00:00:00
+    Type: datetime
+    MinVal: 2012-01-01 00:00:00
   source_addresses:
-    type: string/text
-    length: 250
+    Type: string/text
+    Length: 250
   instant:
-    type: bool
+    Type: bool
   instant_id:
-    type: text
-    length: 100
+    Type: string/text
+    Length: 100
   json_blob:
-    type: text
-    length: 100
+    Type: string/text
+    Length: 100
   confirmed_datetime:
-    type: datetime
-    nullable: 0.1
+    Type: datetime
+    Nullable: 0.1
   amount:
-    type: float/normal
-    minVal: -1
-    maxVal: 1
-  currency:
-    type: string/rand
-    length: 120
-    nullable: 0.1
+    Type: float/normal
+    MinVal: -1
+    MaxVal: 1
   currency_enum:
-    type: int
+    Type: int
+    MinVal: 1
+    MaxVal: 200
