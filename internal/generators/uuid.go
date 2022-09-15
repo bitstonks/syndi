@@ -1,8 +1,6 @@
 package generators
 
 import (
-	"fmt"
-
 	"github.com/bitstonks/syndi/internal/config"
 	"github.com/google/uuid"
 )
@@ -10,13 +8,15 @@ import (
 // It's here so that it can be monkey patched in tests
 var uuidGen = uuid.NewString
 
-type uuidGenerator struct{}
+type uuidGenerator struct {
+	quotedFmt
+}
 
 // TODO: add length?
 func NewUuidGenerator(args config.ColumnDef) Generator {
 	return &uuidGenerator{}
 }
 
-func (g *uuidGenerator) Next() string {
-	return fmt.Sprintf("'%s'", uuidGen())
+func (g *uuidGenerator) Next() interface{} {
+	return uuidGen()
 }

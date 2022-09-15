@@ -1,7 +1,6 @@
 package generators
 
 import (
-	"fmt"
 	"math/rand"
 
 	"github.com/bitstonks/syndi/internal/config"
@@ -11,6 +10,7 @@ type stringGenerator struct {
 	rng *rand.Rand
 	len int
 	all []rune
+	quotedFmt
 }
 
 func NewStringGenerator(args config.ColumnDef) Generator {
@@ -25,11 +25,11 @@ func NewStringGenerator(args config.ColumnDef) Generator {
 	}
 }
 
-func (g *stringGenerator) Next() string {
+func (g *stringGenerator) Next() interface{} {
 	b := make([]rune, g.len)
 	for i := range b {
 		b[i] = g.all[g.rng.Intn(len(g.all))]
 	}
-	return fmt.Sprintf("'%s'", string(b))
+	return string(b)
 
 }

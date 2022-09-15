@@ -9,7 +9,7 @@ import (
 )
 
 type Generator interface {
-	Next() string
+	Next() interface{}
 }
 
 var generatorBuilders map[string]func(config.ColumnDef) Generator
@@ -24,7 +24,7 @@ func GetGenerator(args config.ColumnDef) (Generator, error) {
 	if !ok {
 		return nil, fmt.Errorf("generator of type %s doesn't exist", args.Type)
 	}
-	return MakeNullifier(builder(args), args.Nullable), nil
+	return MakeNullifier(NewFormatter(builder(args), args.Format), args.Nullable), nil
 }
 
 func init() {
